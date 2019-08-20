@@ -1,0 +1,10 @@
+Package: LcmmOhdsi
+Title: Extended Mixed Models using Latent Classes and Latent Processes dedicated to OMOP-CDM
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Seng Chan", "You", email = "applegna@gmail.com", role = c("aut","cre"))
+    )
+Description: What the package does (one paragraph).
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
