@@ -53,7 +53,7 @@ setLcmm <- function(fixedArg= c(2),
 #' @export
 #' 
 runLcmm<- function(modelSettings,data){
-    if(class(modelSettings)!="lcmmModelSettings") stop ('modelSettings should be a resultant list from the setLcmm function')
+    #if(class(modelSettings)!="lcmmModelSettings") stop ('modelSettings should be a resultant list from the setLcmm function')
     
     switch(modelSettings$fixedArg,
            {fixedFormula = "covariateValue ~ timeId"},
@@ -75,7 +75,7 @@ runLcmm<- function(modelSettings,data){
     result<-lcmm::hlme(fixed = as.formula(fixedFormula),
                        mixture =as.formula(mixtureFormula),
                        random = as.formula(randomFormula),
-                       subject = "subjectId",
+                       subject = "rowId",
                        ng = classNum,
                        data = data)
     
