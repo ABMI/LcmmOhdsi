@@ -4,14 +4,14 @@
 \alias{longtermPopulation}
 \title{get targetLongtermPopulation data}
 \usage{
-longtermPopulation(temporalPlpData, targetConceptIds,
+longtermPopulation(temporalPlpResult, targetConceptIds,
   minMeasurementCount = 1, useDemographicsAge = FALSE,
   useDemographicsGender = FALSE, connectionDetails = NULL,
   cdmDatabaseSchema = NULL, resultDatabaseSchema = NULL,
   cohortTable = NULL, targetCohortId = NULL)
 }
 \arguments{
-\item{temporalPlpData}{result of getTemporalPlpData (list)}
+\item{temporalPlpResult}{result of getTemporalPlpData (list)}
 
 \item{targetConceptIds}{target long-term followed conceptIds}
 

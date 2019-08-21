@@ -15,7 +15,6 @@
 # limitations under the License.
 
 #' get temporalPlpData for lcmm
-#' @name getTemporalPlpData
 #' @param startDay                         should be integer
 #' @param endDay                           should be integer
 #' @param daysInterval                     should be integer
@@ -36,7 +35,7 @@
 #' @param riskWindowEnd                    integer, if NULL, riskWindowEnd = endDay
 #' @param addExposureDaysToEnd             logical (default = FALSE)
 #' @export
-#' 
+
 getTemporalPlpData <- function(startDay,
                                endDay,
                                daysInterval,
@@ -69,7 +68,6 @@ getTemporalPlpData <- function(startDay,
                                                           outcomeTable = cohortTable,
                                                           cohortId = targetCohortId,
                                                           outcomeId = outcomeCohortId,
-                                                          #rowIdField = "subject_id",
                                                           covariateSettings = temporalSettings,
                                                           sampleSize = NULL)
     
@@ -93,12 +91,11 @@ getTemporalPlpData <- function(startDay,
                    outcomeCohortId = outcomeCohortId,
                    plpData = temporalPlpData,
                    population = population)
-    class(result) <- "temporalPlpData"
+    class(result) <- "temporalPlpResult"
     return(result)
 }
 
 #' get demographic data
-#' @name demographicData
 #' @importFrom dplyr %>%
 #' @param useDemographicsAge               logical, If you want to adjust for your age, this has to be TRUE
 #' @param useDemographicsGender            logical, If you want to adjust for your gender, this has to be TRUE
@@ -107,13 +104,15 @@ getTemporalPlpData <- function(startDay,
 #' @param resultDatabaseSchema
 #' @param cohortTable
 #' @param targetCohortId
-demographic <- function(useDemographicsAge,
-                        useDemographicsGender,
-                        connectionDetails,
-                        cdmDatabaseSchema,
-                        resultDatabaseSchema,
-                        cohortTable,
-                        targetCohortId){
+#' @export
+
+getDemographic <- function(useDemographicsAge,
+                           useDemographicsGender,
+                           connectionDetails,
+                           cdmDatabaseSchema,
+                           resultDatabaseSchema,
+                           cohortTable,
+                           targetCohortId){
     demographicSetting <- FeatureExtraction::createCovariateSettings(useDemographicsAge = useDemographicsAge,
                                                                      useDemographicsGender = useDemographicsGender)
     demographicPlpData <- PatientLevelPrediction::getPlpData(connectionDetails = connectionDetails,
@@ -139,9 +138,8 @@ demographic <- function(useDemographicsAge,
 }
 
 #' get targetLongtermPopulation data
-#' @name longtermPopulation
 #' @importFrom dplyr %>%
-#' @param temporalPlpData                  result of getTemporalPlpData (list)
+#' @param temporalPlpResult                result of getTemporalPlpData (list)
 #' @param targetConceptIds                 target long-term followed conceptIds
 #' @param minMeasurementCount              integer, minimum count of measurement, defualt = 1
 #' @param useDemographicsAge               logical, If you want to adjust for your age, this has to be TRUE
@@ -152,7 +150,8 @@ demographic <- function(useDemographicsAge,
 #' @param cohortTable                      If useDemographicsAge or useDemographicsGender is TRUE, then you should fill
 #' @param targetCohortId                   If useDemographicsAge or useDemographicsGender is TRUE, then you should fill
 #' @export
-longtermPopulation <- function(temporalPlpData,
+
+longtermPopulation <- function(temporalPlpResult,
                                targetConceptIds,
                                minMeasurementCount = 1,
                                useDemographicsAge = FALSE,
@@ -162,6 +161,12 @@ longtermPopulation <- function(temporalPlpData,
                                resultDatabaseSchema = NULL,
                                cohortTable = NULL,
                                targetCohortId = NULL){
+    
+    targetCohortId = temporalPlpResult[[1]]
+    outcomeCohortId = temporalPlpResult[[2]]
+    temporalPlpData = temporalPlpResult[[3]]
+    population = temporalPlpResult[[4]]
+    
     # subset covariate Reference of interest
     covariateRef <- ff::as.ram(temporalPlpData$covariateRef)
     targetCovariateRef <- covariateRef[covariateRef$conceptId %in% targetConceptIds,]
@@ -193,13 +198,13 @@ longtermPopulation <- function(temporalPlpData,
     
     # add demographic data
     if(useDemographicsAge|useDemographicsGender){
-        demographic <- demographic(useDemographicsAge = useDemographicsAge,
-                                   useDemographicsGender = useDemographicsGender,
-                                   connectionDetails = connectionDetails,
-                                   cdmDatabaseSchema = cdmDatabaseSchema,
-                                   resultDatabaseSchema = resultDatabaseSchema,
-                                   cohortTable = cohortTable,
-                                   targetCohortId = targetCohortId)
+        demographic <- getDemographic(useDemographicsAge = useDemographicsAge,
+                                      useDemographicsGender = useDemographicsGender,
+                                      connectionDetails = connectionDetails,
+                                      cdmDatabaseSchema = cdmDatabaseSchema,
+                                      resultDatabaseSchema = resultDatabaseSchema,
+                                      cohortTable = cohortTable,
+                                      targetCohortId = targetCohortId)
     }
     if(useDemographicsAge) targetLongtermPopulation <- left_join(targetLongtermPopulation,demographic%>%select(subjectId,ageInYear),by = "subjectId")
     if(useDemographicsGender) targetLongtermPopulation <-  left_join(targetLongtermPopulation,demographic%>%select(subjectId,genderConceptId),by = "subjectId") 
