@@ -138,7 +138,7 @@ getDemographic <- function(useDemographicsAge,
 }
 
 #' get targetLongtermPopulation data
-#' @importFrom dplyr %>%
+#' @import dplyr
 #' @param temporalPlpResult                result of getTemporalPlpData (list)
 #' @param targetConceptIds                 target long-term followed conceptIds
 #' @param minMeasurementCount              integer, minimum count of measurement, defualt = 1
@@ -188,7 +188,7 @@ longtermPopulation <- function(temporalPlpResult,
     
     # if targetCohortId = outcomeCohortId, filter targetLongtermPopulation according to survival time
     if(targetCohortId != outcomeCohortId){
-        targetLongtermPopulation <- targetLongtermPopulation %>% filter( (survivalTime - 1) >= endDay )
+        targetLongtermPopulation <- targetLongtermPopulation %>% dplyr::filter( (survivalTime - 1) >= endDay )
     }
     
     # filter people who have count of measurement less than minMeasurementCount
@@ -206,8 +206,8 @@ longtermPopulation <- function(temporalPlpResult,
                                       cohortTable = cohortTable,
                                       targetCohortId = targetCohortId)
     }
-    if(useDemographicsAge) targetLongtermPopulation <- left_join(targetLongtermPopulation,demographic%>%select(subjectId,ageInYear),by = "subjectId")
-    if(useDemographicsGender) targetLongtermPopulation <-  left_join(targetLongtermPopulation,demographic%>%select(subjectId,genderConceptId),by = "subjectId") 
+    if(useDemographicsAge) targetLongtermPopulation <- dplyr::left_join(targetLongtermPopulation,demographic%>%dplyr::select(subjectId,ageInYear),by = "subjectId")
+    if(useDemographicsGender) targetLongtermPopulation <-  dplyr::left_join(targetLongtermPopulation,demographic%>%dplyr::select(subjectId,genderConceptId),by = "subjectId") 
     
     return(targetLongtermPopulation)
 }
