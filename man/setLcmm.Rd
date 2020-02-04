@@ -4,8 +4,13 @@
 \alias{setLcmm}
 \title{set arguments for lcmm}
 \usage{
-setLcmm(fixedArg = c(2), mixtureArg = c(1, 2), randomArg = c(1, 2),
-  classNum = 2:7, randomSeed = 1234)
+setLcmm(
+  fixedArg = c(2),
+  mixtureArg = c(1, 2),
+  randomArg = c(1, 2),
+  classNum = 2:7,
+  randomSeed = 1234
+)
 }
 \arguments{
 \item{fixedArg}{should be one integer}
