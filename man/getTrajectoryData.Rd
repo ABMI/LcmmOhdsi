@@ -14,6 +14,7 @@ getTrajectoryData(
   demographicSetting,
   TargetMeasurementConceptId,
   trajectoryByUnit,
+  trajectoryBy,
   valueSelectMethod,
   minimumMeasurementCount,
   TargetCohortId

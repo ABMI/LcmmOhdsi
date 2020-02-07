@@ -22,7 +22,7 @@ createLCMMsetting <- function(targetCohortId,
                               ageAdjusted = FALSE,
                               genderAdjusted = FALSE,
                               degreeNum = 2:7,
-                              classNum= 2:7,
+                              classNum = 2:7,
                               minimumMeasurementCount,
                               randomSeed = NULL
                               ){
