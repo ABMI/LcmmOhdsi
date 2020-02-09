@@ -103,5 +103,11 @@ getTrajectoryData <- function(connectionDetails,
     # class(measurementWithDemographicData) <- "LongitudinalData"
     longitudinalData <- measurementWithDemographicData
     
+    if(trajectoryBy == 'age'){
+        longitudinalData$time = longitudinalData$ageAtMeasure
+    } else if (trajectoryBy == 'FU'){
+        longitudinalData$time = longitudinalData$timeDivTimeUnit
+    }
+    
     return(longitudinalData)
 }

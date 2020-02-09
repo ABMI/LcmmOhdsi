@@ -28,4 +28,14 @@ longitudinalData <- getTrajectoryData(connectionDetails = connectionDetails,
                                       valueSelectMethod = lcmm_setting$valueSelectMethod,
                                       minimumMeasurementCount = lcmm_setting$minimumMeasurementCount,
                                       TargetCohortId = lcmm_setting$targetCohortId)
+
 head(longitudinalData)
+NumSet <- expand.grid(degreeNum = lcmm_setting$degreeNum, classNum = lcmm_setting$classNum) 
+# NumSet[3,]$degreeNum
+maxCores <- if(nrow(NumSet) < parallel::detectCores()-1){ nrow(NumSet) } else { parallel::detectCores()-1 }
+cluster <- ParallelLogger::makeCluster(numberOfThreads = maxCores)
+result <- ParallelLogger::clusterApply(cluster, 1:nrow(NumSet), 
+                                       fun = function(x){doLCMM(NumSettingList = x,
+                                                                data = longitudinalData)})
+ParallerLogger::stopCluster(cluster)
+
